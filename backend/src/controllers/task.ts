@@ -55,6 +55,13 @@ type CreateTaskBody = {
   isChecked?: boolean;
 };
 
+type UpdateTaskBody = {
+  _id: string;
+  title?: string;
+  description?: string;
+  isChecked?: boolean;
+};
+
 export const createTask: RequestHandler = async (req, res, next) => {
   // extract any errors that were found by the validator
   const errors = validationResult(req);
@@ -85,6 +92,27 @@ export const removeTask: RequestHandler = async (req, res, next) => {
   try {
     const result = await TaskModel.deleteOne({ _id: id });
 
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTask: RequestHandler = async (req, res, next) => {
+  // extract any errors that were found by the validator
+  const errors = validationResult(req);
+  const { id } = req.params;
+  const { _id } = req.body as UpdateTaskBody;
+  try {
+    // if there are errors, then this function throws an exception
+    validationErrorParser(errors);
+    if (id !== _id) {
+      throw res.status(400);
+    }
+
+    const result = await TaskModel.findByIdAndUpdate(id, req.body as UpdateTaskBody);
+
+    if (result === null) return res.status(404);
     res.status(200).json(result);
   } catch (error) {
     next(error);
