@@ -18,7 +18,14 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
   const handleToggleCheck = async () => {
     setLoading(true);
     try {
-      const result = await updateTask({ ...task, isChecked: !task.isChecked });
+      const result = await updateTask({
+        _id: task._id,
+        title: task.title,
+        description: task.description,
+        isChecked: !task.isChecked,
+        assignee: task.assignee?._id,
+        dateCreated: task.dateCreated,
+      });
       if (result.success) {
         setTask(result.data);
       } else {
@@ -28,6 +35,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       console.error("Failed to update task:", err);
     } finally {
       setLoading(false);
+      window.location.reload();
     }
   };
 
@@ -36,7 +44,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       <CheckButton
         checked={task.isChecked}
         onPress={() => {
-          void handleToggleCheck();
+          return void handleToggleCheck();
         }}
         disabled={isLoading}
       />
