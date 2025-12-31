@@ -1,0 +1,83 @@
+/* Task detail page styles to match Figma */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 0;
+}
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.backLink {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+.header {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.title {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+}
+.description {
+  margin-top: 6px;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+.metaItem {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.metaLabel {
+  min-width: 110px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+.metaValue {
+  color: var(--color-text-secondary);
+}
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-background-muted, #e6eefc);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  margin-right: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.06);
+}
+/* make edit button stand out as yellow like Figma */
+.editButton {
+  background-color: #e0b400 !important;
+  color: #081019 !important;
+  border: none;
+}
+.centered {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 28px 0;
+}

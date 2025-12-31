@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { createTask } from "src/api/tasks";
+import { createTask, updateTask } from "src/api/tasks";
 import { TaskForm } from "src/components/TaskForm";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { CreateTaskRequest, Task } from "src/api/tasks";
+import type { CreateTaskRequest, Task, UpdateTaskRequest } from "src/api/tasks";
 import type { TaskFormProps } from "src/components/TaskForm";
 
 const TITLE_INPUT_ID = "task-title-input";
@@ -35,6 +35,7 @@ vi.mock("src/api/tasks", () => ({
    * See https://vitest.dev/guide/mocking#functions for more info about mock functions.
    */
   createTask: vi.fn(async (_params: CreateTaskRequest) => Promise.resolve({ success: true })),
+  updateTask: vi.fn(async (_params: UpdateTaskRequest) => Promise.resolve({ success: true })),
 }));
 
 /**
@@ -48,6 +49,14 @@ const mockTask: Task = {
   dateCreated: new Date(),
 };
 
+const mockUpdatedTask = {
+  _id: "task123",
+  title: "Updated title",
+  description: "Updated description",
+  assignee: "",
+  isChecked: false,
+  dateCreated: new Date(),
+};
 /**
  * Renders the `TaskForm` component for use in tests
  */
@@ -133,11 +142,8 @@ describe("taskForm", () => {
     });
     const saveButton = screen.getByTestId(SAVE_BUTTON_ID);
     fireEvent.click(saveButton);
-    expect(createTask).toHaveBeenCalledTimes(1);
-    expect(createTask).toHaveBeenCalledWith({
-      title: "Updated title",
-      description: "Updated description",
-    });
+    expect(updateTask).toHaveBeenCalledTimes(1);
+    expect(updateTask).toHaveBeenCalledWith(mockUpdatedTask);
     await waitFor(() => {
       // If the test ends before all state updates and rerenders occur, we'll
       // get a warning about updates not being wrapped in an `act(...)`

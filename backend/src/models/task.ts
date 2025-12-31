@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { model, Schema } from "mongoose";
 
 import type { InferSchemaType } from "mongoose";
@@ -5,6 +6,7 @@ import type { InferSchemaType } from "mongoose";
 const taskSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
+  assignee: { type: ObjectId, ref: "User" },
   isChecked: { type: Boolean, default: false },
   // Note that dateCreated has type Date, which is MongoDB's recommended format
   // for storing dates (as opposed to, say, strings or numbers--see

@@ -1,6 +1,7 @@
 import { useState } from "react"; // update this line
+import { Link } from "react-router";
 import { updateTask } from "src/api/tasks";
-import { CheckButton } from "src/components";
+import { CheckButton, UserTag } from "src/components";
 import styles from "src/components/TaskItem.module.css";
 
 import type { Task } from "src/api/tasks";
@@ -17,7 +18,14 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
   const handleToggleCheck = async () => {
     setLoading(true);
     try {
-      const result = await updateTask({ ...task, isChecked: !task.isChecked });
+      const result = await updateTask({
+        _id: task._id,
+        title: task.title,
+        description: task.description || "",
+        isChecked: !task.isChecked,
+        assignee: task.assignee?._id,
+        dateCreated: task.dateCreated,
+      });
       if (result.success) {
         setTask(result.data);
       } else {
@@ -27,6 +35,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       console.error("Failed to update task:", err);
     } finally {
       setLoading(false);
+      // window.location.reload();
     }
   };
 
@@ -35,7 +44,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       <CheckButton
         checked={task.isChecked}
         onPress={() => {
-          void handleToggleCheck();
+          return void handleToggleCheck();
         }}
         disabled={isLoading}
       />
@@ -44,9 +53,12 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
           task.isChecked ? `${styles.textContainer} ${styles.checked}` : styles.textContainer
         }
       >
-        <span className={styles.title}>{task.title}</span>
+        <Link to={`/task/${task._id}`} className={styles.titleLink}>
+          <span className={styles.title}>{task.title}</span>
+        </Link>
         {task.description && <span>{task.description}</span>}
       </div>
+      <UserTag user={task.assignee} />
     </div>
   );
 }
