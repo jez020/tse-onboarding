@@ -116,10 +116,8 @@ export async function updateTask(task: UpdateTaskRequest): Promise<APIResult<Tas
     if (task.assignee === "") {
       task.assignee = undefined;
     }
-    console.log(task);
     const response = await put(`/api/task/${task._id}`, task);
     const json = (await response.json()) as TaskJSON;
-    console.log("Update task response JSON:", json);
     return { success: true, data: parseTask(json) };
   } catch (error) {
     return handleAPIError(error);
