@@ -52,6 +52,7 @@ export const getTask: RequestHandler = async (req, res, next) => {
 type CreateTaskBody = {
   title: string;
   description?: string;
+  assignee?: string;
   isChecked?: boolean;
 };
 
@@ -59,6 +60,7 @@ type UpdateTaskBody = {
   _id: string;
   title?: string;
   description?: string;
+  assignee?: string;
   isChecked?: boolean;
 };
 
@@ -110,11 +112,12 @@ export const updateTask: RequestHandler = async (req, res, next) => {
     if (id !== _id) {
       throw res.status(400);
     }
-    const result = await TaskModel.findByIdAndUpdate(id, req.body as UpdateTaskBody);
+    const body = req.body as UpdateTaskBody;
+    const result = await TaskModel.findByIdAndUpdate(id, body);
 
     if (result === null) return res.status(404);
-    const getTheTask = await TaskModel.findById(id);
-    res.status(200).json(getTheTask?.populate("assignee"));
+    const getTheTask = await TaskModel.findById(id).populate("assignee");
+    res.status(200).json(getTheTask);
   } catch (error) {
     next(error);
   }

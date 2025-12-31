@@ -11,17 +11,31 @@ const makeNameValidator = () =>
     .isString()
     .withMessage("name must be a string")
     .bail()
-    .notEmpty()
+    // trim whitespace so strings like "   " are treated as empty
+    .trim()
+    .isLength({ min: 1 })
     .withMessage("name cannot be empty");
+
 const makeProfilePictureURLValidator = () =>
-  body("description")
+  body("profilePictureURL")
     // order matters for the validation chain - by marking this field as optional, the rest of
-    // the chain will only be evaluated if it exists
-    .optional()
+    // the chain will only be evaluated if it exists / is truthy
+    .optional({ checkFalsy: true })
     .isString()
-    .withMessage("description must be a string")
+    .withMessage("profilePictureURL must be a string")
     .bail()
-    .isURL()
-    .withMessage("profilePictureURL must be a valid URL");
+    .trim()
+    // use a custom validator to reliably detect invalid/missing protocol URLs
+    .custom((value: string) => {
+      try {
+        const parsed = new URL(value);
+        if (!/^https?:$/.test(parsed.protocol)) {
+          throw new Error("profilePictureURL must include http:// or https://");
+        }
+        return true;
+      } catch {
+        throw new Error("profilePictureURL must be a valid URL (include http:// or https://)");
+      }
+    });
 
 export const createUser = [makeNameValidator(), makeProfilePictureURLValidator()];

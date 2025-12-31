@@ -1,7 +1,7 @@
 import { useState } from "react"; // update this line
 import { Link } from "react-router";
 import { updateTask } from "src/api/tasks";
-import { CheckButton } from "src/components";
+import { CheckButton, UserTag } from "src/components";
 import styles from "src/components/TaskItem.module.css";
 
 import type { Task } from "src/api/tasks";
@@ -21,7 +21,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       const result = await updateTask({
         _id: task._id,
         title: task.title,
-        description: task.description,
+        description: task.description || "",
         isChecked: !task.isChecked,
         assignee: task.assignee?._id,
         dateCreated: task.dateCreated,
@@ -35,7 +35,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
       console.error("Failed to update task:", err);
     } finally {
       setLoading(false);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 
@@ -58,6 +58,7 @@ export function TaskItem({ task: initialTask }: TaskItemProps) {
         </Link>
         {task.description && <span>{task.description}</span>}
       </div>
+      <UserTag user={task.assignee} />
     </div>
   );
 }

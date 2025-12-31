@@ -1,0 +1,27 @@
+.usertag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background-color: var(--color-tse-navy-blue);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  height: 2rem;
+  width: 12rem;
+  box-sizing: border-box;
+}
+
+.usertagimage {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  display: block;
+}
+
+.usertagname {
+  font: var(--font-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

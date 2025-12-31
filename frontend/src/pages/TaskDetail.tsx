@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getTask, type Task } from "src/api/tasks";
-import { Button, Page } from "src/components";
+import { Button, Page, TaskForm, UserTag } from "src/components";
 import styles from "src/pages/TaskDetail.module.css";
 
 export function TaskDetail() {
   const [task, setTask] = useState<Task | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isEditing, setEditing] = useState<boolean>(false);
   const params = useParams();
 
   useEffect(() => {
-    setLoading(true);
     if (params.id) {
       getTask(params.id)
         .then((result) => {
@@ -23,20 +22,9 @@ export function TaskDetail() {
         .catch((error) => {
           console.error(`An unexpected error occurred: ${error}`);
           setTask(undefined);
-        })
-        .finally(() => setLoading(false));
-    } else setLoading(false);
+        });
+    }
   }, [params.id]);
-
-  const assigneeInitials = (name?: string) => {
-    if (!name) return "";
-    return name
-      .split(" ")
-      .map((s) => s[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase();
-  };
 
   const formatCreated = (d?: Date) => {
     if (!d) return "";
@@ -67,29 +55,34 @@ export function TaskDetail() {
                 <div className={styles.description}>Task description</div>
               )}
             </div>
-            <Link to={params.id ? `/task/${params.id}/edit` : "/"}>
-              <Button kind="primary" className={styles.editButton} label="Edit task" />
-            </Link>
+            {task && (
+              <Button
+                kind="primary"
+                className={styles.editButton}
+                label="Edit task"
+                onClick={() => {
+                  setEditing(true);
+                }}
+              />
+            )}
           </div>
         </div>
 
-        {loading ? (
-          <div className={styles.centered}>Loading task…</div>
+        {isEditing ? (
+          <TaskForm
+            task={task}
+            mode="edit"
+            onSubmit={(updatedTask) => {
+              setTask(updatedTask);
+              setEditing(false);
+            }}
+          />
         ) : task ? (
           <div>
             <div className={styles.metaList}>
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>Assignee</span>
-                <span className={styles.metaValue}>
-                  {task.assignee ? (
-                    <>
-                      <span className={styles.avatar}>{assigneeInitials(task.assignee.name)}</span>
-                      {task.assignee.name}
-                    </>
-                  ) : (
-                    "Unassigned"
-                  )}
-                </span>
+                <UserTag user={task.assignee} />
               </div>
 
               <div className={styles.metaItem}>
