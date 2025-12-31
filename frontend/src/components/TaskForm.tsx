@@ -56,8 +56,7 @@ export function TaskForm({ mode, task, onSubmit }: TaskFormProps) {
     setLoading(true);
 
     if (mode === "create") {
-      const assigneeTemp = assignee === "" ? "69549b80921cda4cbeb9f537" : assignee;
-      createTask({ title, description, assignee: assigneeTemp })
+      createTask({ title, description, assignee })
         .then((result) => {
           if (result.success) {
             // clear the form
@@ -81,12 +80,11 @@ export function TaskForm({ mode, task, onSubmit }: TaskFormProps) {
         })
         .catch(setErrorModalMessage);
     } else {
-      const assigneeTemp = assignee === "" ? "69549b80921cda4cbeb9f537" : assignee;
       updateTask({
         _id: task!._id,
         title,
         description,
-        assignee: assigneeTemp,
+        assignee,
         isChecked: task!.isChecked,
         dateCreated: task!.dateCreated,
       })
